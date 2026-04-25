@@ -23,6 +23,11 @@ export default async function handler(req) {
       apiKey = process.env.NVIDIA_SAFETY_KEY;
     }
     
+    // Fallback to universal key if specific one isn't provided
+    if (!apiKey) {
+      apiKey = process.env.NVIDIA_API_KEY;
+    }
+    
     if (!apiKey) {
       return new Response(JSON.stringify({ error: `Missing environment variable for model: ${model}` }), { status: 500 });
     }
