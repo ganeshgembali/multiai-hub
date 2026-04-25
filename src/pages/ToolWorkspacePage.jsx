@@ -736,7 +736,7 @@ Formatting rules:
             stream: true
           };
         } else if (tool.id === 'pdf-qa') {
-          model = 'deepseek-ai/deepseek-v3.2';
+          model = 'minimaxai/minimax-m2.7';
           prompt = `Answer the question based only on the provided PDF content.
 
 If not found, say "Not found in document."
