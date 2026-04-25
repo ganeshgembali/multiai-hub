@@ -22,8 +22,12 @@ export default async function handler(req) {
     const body = await req.json();
     const model = body.model || '';
 
-    // Force use of the universal key because specific keys are returning 403 or hanging
-    let apiKey = process.env.NVIDIA_API_KEY;
+    // Force use of the universal key, but fallback to any available key just in case they named it differently in Vercel
+    let apiKey = process.env.NVIDIA_API_KEY || 
+                 process.env.NVIDIA_SAFETY_KEY || 
+                 process.env.NVIDIA_DEEPSEEK_KEY || 
+                 process.env.NVIDIA_QWEN_KEY || 
+                 process.env.NVIDIA_MINIMAX_KEY;
 
     if (!apiKey) {
       return new Response(

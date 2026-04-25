@@ -833,9 +833,10 @@ Formatting rules:
           let errorMsg = response.statusText;
           try {
             const errData = await response.json();
+            if (errData.error) errorMsg = errData.error;
             if (errData.detail) errorMsg = errData.detail;
           } catch(e) {}
-          throw new Error(`${response.status} ${errorMsg}`);
+          throw new Error(`${response.status} - ${errorMsg}`);
         }
 
         setLoading(false); // Stop spinner, start streaming text
