@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Copy, Trash2, Upload, Loader2, Sparkles, Check } from 'lucide-react';
 import { getToolById } from '../data/tools';
 import toast from 'react-hot-toast';
+import extractText from 'react-pdftotext';
 
 const loadingMessages = {
   'resume-analyzer': ['Uploading resume...', 'Scanning structure...', 'Checking ATS keywords...', 'Evaluating strengths...', 'Preparing report...'],
@@ -87,19 +88,8 @@ export default function ToolWorkspacePage() {
     if (file) {
       try {
         if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
-          // Extract text from PDF using pdfjs-dist
-          const pdfjsLib = await import('pdfjs-dist');
-          pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
-          const arrayBuffer = await file.arrayBuffer();
-          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-          const textPages = [];
-          for (let i = 1; i <= pdf.numPages; i++) {
-            const page = await pdf.getPage(i);
-            const textContent = await page.getTextContent();
-            const pageText = textContent.items.map((item) => item.str).join(' ');
-            textPages.push(pageText);
-          }
-          fileContent = textPages.join('\n\n');
+          // Safely extract text using react-pdftotext
+          fileContent = await extractText(file);
         } else {
           // Plain text / docx fallback — read as text
           fileContent = await new Promise((resolve, reject) => {
