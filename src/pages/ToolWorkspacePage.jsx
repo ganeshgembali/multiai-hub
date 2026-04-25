@@ -82,12 +82,33 @@ export default function ToolWorkspacePage() {
     setOutput('');
     setReasoning('');
 
+    // Read file content if a file was uploaded
+    let fileContent = '';
+    if (file) {
+      try {
+        fileContent = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target.result);
+          reader.onerror = () => reject(new Error('Failed to read file'));
+          reader.readAsText(file);
+        });
+      } catch {
+        toast.error('Could not read the uploaded file. Please paste the text manually.');
+        setLoading(false);
+        return;
+      }
+    }
+
+    // Combine file content + textarea input
+    const combinedInput = [fileContent.trim(), input.trim()].filter(Boolean).join('\n\n');
+
     const targetTools = ['resume-analyzer', 'interview-generator'];
     const codingTools = ['code-debugger', 'code-explainer', 'bug-finder', 'sql-generator'];
     const studyProdTools = ['notes-summarizer', 'quiz-generator', 'flashcard-maker', 'meeting-notes', 'daily-planner'];
     const writingTools = ['cover-letter', 'email-writer', 'grammar-fixer', 'blog-generator', 'social-caption'];
 
     if (targetTools.includes(tool.id) || codingTools.includes(tool.id) || studyProdTools.includes(tool.id) || writingTools.includes(tool.id) || tool.id === 'todo-generator' || tool.id === 'idea-generator' || tool.id === 'ats-score' || tool.id === 'pdf-qa') {
+
       try {
         // --- 1. Safety Filter Check ---
         try {
@@ -140,7 +161,7 @@ ATS Score: /100
 ## Improvements:
 
 Final Verdict:
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -170,7 +191,7 @@ Easy:
 Medium:
 Advanced:
 
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -210,7 +231,7 @@ Issues:
 Fixed Code:
 Explanation:
 
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -239,7 +260,7 @@ Purpose:
 How it works:
 Important lines:
 
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -265,7 +286,7 @@ Formatting rules:
 
 Return bullet points only.
 
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -293,7 +314,7 @@ Return:
 SQL Query:
 Explanation:
 
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -333,7 +354,7 @@ Main Points:
 ------------
 
 Short Summary:
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -365,7 +386,7 @@ C)
 D)
 Answer:
 
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -393,7 +414,7 @@ Return:
 Q:
 A:
 
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -422,7 +443,7 @@ Summary:
 Action Items:
 Deadlines:
 
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -448,7 +469,7 @@ Formatting rules:
 
 Return hourly plan.
 
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -485,7 +506,7 @@ Formatting rules:
 
 Keep concise and polished.
 
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -513,7 +534,7 @@ Return:
 Subject:
 Email Body:
 
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -539,7 +560,7 @@ Formatting rules:
 
 Return only corrected text.
 
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -569,7 +590,7 @@ Intro:
 Main Content:
 Conclusion:
 
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -593,7 +614,7 @@ Formatting rules:
           } else if (tool.id === 'social-caption') {
             prompt = `Generate 5 catchy social media captions with hashtags.
 
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -631,7 +652,7 @@ Formatting rules:
 
 Return checklist format.
 
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -666,7 +687,7 @@ Formatting rules:
 
 Return numbered list with short explanation.
 
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -706,7 +727,7 @@ Issues:
 
 ## Fixes:
 
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
@@ -742,7 +763,7 @@ Formatting rules:
 If not found, say "Not found in document."
 
 Question:
-${input}
+${combinedInput}
 
 Return only the final answer for the user.
 
