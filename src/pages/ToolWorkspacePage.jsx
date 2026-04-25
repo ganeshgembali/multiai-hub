@@ -91,11 +91,10 @@ export default function ToolWorkspacePage() {
       try {
         // --- 1. Safety Filter Check ---
         try {
-          const safetyResponse = await fetch('/nvidia-api/v1/chat/completions', {
+          const safetyResponse = await fetch('/api/proxy', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer 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'
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({
               model: "meta/llama-guard-3-8b",
@@ -121,12 +120,10 @@ export default function ToolWorkspacePage() {
 
         let prompt = '';
         let model = '';
-        let apiKey = '';
         let reqBody = {};
 
         if (targetTools.includes(tool.id)) {
           model = 'deepseek-ai/deepseek-v3.2';
-          apiKey = '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';
           if (tool.id === 'resume-analyzer') {
             prompt = `Analyze this resume professionally.
 
@@ -206,7 +203,6 @@ Formatting rules:
           };
         } else if (codingTools.includes(tool.id)) {
           model = 'qwen/qwen3-coder-480b-a35b-instruct';
-          apiKey = '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';
           if (tool.id === 'code-debugger') {
             prompt = `Find bugs in this code.
 
@@ -330,7 +326,6 @@ Formatting rules:
           };
         } else if (studyProdTools.includes(tool.id)) {
           model = 'deepseek-ai/deepseek-v3.2';
-          apiKey = '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';
           if (tool.id === 'notes-summarizer') {
             prompt = `Summarize these notes clearly.
 
@@ -487,7 +482,6 @@ Formatting rules:
           };
         } else if (writingTools.includes(tool.id)) {
           model = 'minimaxai/minimax-m2.7';
-          apiKey = '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';
           if (tool.id === 'cover-letter') {
             prompt = `Write a professional cover letter based on this job role and profile.
 
@@ -635,7 +629,6 @@ Formatting rules:
           };
         } else if (tool.id === 'todo-generator') {
           model = 'minimaxai/minimax-m2.7';
-          apiKey = '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';
           prompt = `Create a productive to-do list based on this goal.
 
 Return checklist format.
@@ -671,7 +664,6 @@ Formatting rules:
           };
         } else if (tool.id === 'idea-generator') {
           model = 'minimaxai/minimax-m2.7';
-          apiKey = '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';
           prompt = `Generate 10 creative ideas based on this topic.
 
 Return numbered list with short explanation.
@@ -707,7 +699,6 @@ Formatting rules:
           };
         } else if (tool.id === 'ats-score') {
           model = 'minimaxai/minimax-m2.7';
-          apiKey = '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';
           prompt = `Evaluate this resume for ATS compatibility.
 
 Return:
@@ -748,7 +739,6 @@ Formatting rules:
           };
         } else if (tool.id === 'pdf-qa') {
           model = 'deepseek-ai/deepseek-v3.2';
-          apiKey = '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';
           prompt = `Answer the question based only on the provided PDF content.
 
 If not found, say "Not found in document."
@@ -786,11 +776,10 @@ Formatting rules:
           };
         }
 
-        const response = await fetch('/nvidia-api/v1/chat/completions', {
+        const response = await fetch('/api/proxy', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify(reqBody)
         });
