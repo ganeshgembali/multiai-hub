@@ -123,7 +123,7 @@ export default function ToolWorkspacePage() {
         let reqBody = {};
 
         if (targetTools.includes(tool.id)) {
-          model = 'deepseek-ai/deepseek-v3.2';
+          model = 'minimaxai/minimax-m2.7';
           if (tool.id === 'resume-analyzer') {
             prompt = `Analyze this resume professionally.
 
@@ -195,9 +195,9 @@ Formatting rules:
           reqBody = {
             model,
             messages: [{ role: "user", content: prompt }],
-            temperature: 0.3,
-            top_p: 0.95,
-            max_tokens: 4096,
+            temperature: 0.15,
+            top_p: 1.00,
+            max_tokens: 2048,
             stream: true
           };
         } else if (codingTools.includes(tool.id)) {
