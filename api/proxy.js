@@ -46,8 +46,8 @@ export default async function handler(req) {
       );
     }
 
-    // Force streaming off to avoid edge timeout issues
-    const requestBody = { ...body, stream: false };
+    // Force streaming ON to bypass the 25-second limit
+    const requestBody = { ...body, stream: true };
 
     const nvidiaRes = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
       method: 'POST',
@@ -58,26 +58,21 @@ export default async function handler(req) {
       body: JSON.stringify(requestBody)
     });
 
-    const data = await nvidiaRes.json();
-
     if (!nvidiaRes.ok) {
-      return new Response(JSON.stringify(data), {
+      const errorData = await nvidiaRes.text();
+      return new Response(errorData, {
         status: nvidiaRes.status,
         headers: { 'Content-Type': 'application/json' }
       });
     }
 
-    // Return as a fake SSE chunk so the frontend stream parser works
-    const content = data.choices?.[0]?.message?.content || '';
-    const sseChunk = `data: ${JSON.stringify({
-      choices: [{ delta: { content }, finish_reason: 'stop' }]
-    })}\n\ndata: [DONE]\n\n`;
-
-    return new Response(sseChunk, {
+    // Pipe the stream directly to the client
+    return new Response(nvidiaRes.body, {
       status: 200,
       headers: {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
         'Access-Control-Allow-Origin': '*'
       }
     });
