@@ -86,12 +86,29 @@ export default function ToolWorkspacePage() {
     let fileContent = '';
     if (file) {
       try {
-        fileContent = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = (e) => resolve(e.target.result);
-          reader.onerror = () => reject(new Error('Failed to read file'));
-          reader.readAsText(file);
-        });
+        if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+          // Extract text from PDF using pdfjs-dist
+          const pdfjsLib = await import('pdfjs-dist');
+          pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+          const arrayBuffer = await file.arrayBuffer();
+          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          const textPages = [];
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            const pageText = textContent.items.map((item) => item.str).join(' ');
+            textPages.push(pageText);
+          }
+          fileContent = textPages.join('\n\n');
+        } else {
+          // Plain text / docx fallback — read as text
+          fileContent = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = () => reject(new Error('Failed to read file'));
+            reader.readAsText(file);
+          });
+        }
       } catch {
         toast.error('Could not read the uploaded file. Please paste the text manually.');
         setLoading(false);
