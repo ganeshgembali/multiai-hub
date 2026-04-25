@@ -116,14 +116,17 @@ export default function ToolWorkspacePage() {
       }
     }
 
+    // Clean string from weird PDF artifact characters that crash API parsers
+    let cleanFileContent = fileContent.replace(/[^\x20-\x7E\n\r\t]/g, '');
+
     // Combine file content + textarea input and TRUNCATE to avoid 504 TTFT timeout
-    let combinedInput = [fileContent.trim(), input.trim()].filter(Boolean).join('\n\n');
+    let combinedInput = [cleanFileContent.trim(), input.trim()].filter(Boolean).join('\n\n');
     
-    // Hard limit at 15,000 chars (~4,000 tokens). 
-    // Massive payloads take >25s to process the prompt (TTFT), causing Vercel 504.
-    if (combinedInput.length > 15000) {
-      combinedInput = combinedInput.substring(0, 15000) + "\n...[Content Truncated to avoid server timeout]...";
-      toast.error("Large file detected. Only the first few pages were analyzed.", { duration: 5000 });
+    // Hard strict limit at 4,000 chars (~1 dense page). 
+    // Massive payloads or weird PDF formats take >25s to process (TTFT), causing Vercel 504.
+    if (combinedInput.length > 4000) {
+      combinedInput = combinedInput.substring(0, 4000) + "\n...[Content Truncated to avoid server timeout]...";
+      toast.error("File too large. Only the first page was analyzed.", { duration: 5000 });
     }
 
     const targetTools = ['resume-analyzer', 'interview-generator'];
