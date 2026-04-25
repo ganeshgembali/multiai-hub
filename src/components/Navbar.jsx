@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Zap, Moon, Sun, Github } from 'lucide-react';
+import { Menu, X, Zap, Moon, Sun, Code } from 'lucide-react';
 
 export default function Navbar({ darkMode, setDarkMode }) {
   const [scrolled, setScrolled] = useState(false);
@@ -82,7 +82,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
                 className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all"
                 aria-label="GitHub Repository"
               >
-                <Github className="w-4 h-4" />
+                <Code className="w-4 h-4" />
               </a>
 
               <Link
