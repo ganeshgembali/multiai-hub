@@ -201,7 +201,7 @@ Formatting rules:
             stream: true
           };
         } else if (codingTools.includes(tool.id)) {
-          model = 'qwen/qwen3-coder-480b-a35b-instruct';
+          model = 'minimaxai/minimax-m2.7';
           if (tool.id === 'code-debugger') {
             prompt = `Find bugs in this code.
 
@@ -324,7 +324,7 @@ Formatting rules:
             stream: true
           };
         } else if (studyProdTools.includes(tool.id)) {
-          model = 'deepseek-ai/deepseek-v3.2';
+          model = 'minimaxai/minimax-m2.7';
           if (tool.id === 'notes-summarizer') {
             prompt = `Summarize these notes clearly.
 
@@ -473,10 +473,9 @@ Formatting rules:
           reqBody = {
             model,
             messages: [{ role: "user", content: prompt }],
-            temperature: 1,
-            top_p: 0.95,
-            max_tokens: 8192,
-            chat_template_kwargs: { thinking: true },
+            temperature: 0.15,
+            top_p: 1.00,
+            max_tokens: 2048,
             stream: true
           };
         } else if (writingTools.includes(tool.id)) {
