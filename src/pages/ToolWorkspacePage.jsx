@@ -195,10 +195,9 @@ Formatting rules:
           reqBody = {
             model,
             messages: [{ role: "user", content: prompt }],
-            temperature: 1,
+            temperature: 0.3,
             top_p: 0.95,
-            max_tokens: 8192,
-            chat_template_kwargs: { thinking: true },
+            max_tokens: 4096,
             stream: true
           };
         } else if (codingTools.includes(tool.id)) {
@@ -768,10 +767,9 @@ Formatting rules:
           reqBody = {
             model,
             messages: [{ role: "user", content: prompt }],
-            temperature: 1,
+            temperature: 0.3,
             top_p: 0.95,
-            max_tokens: 8192,
-            chat_template_kwargs: { thinking: true },
+            max_tokens: 4096,
             stream: true
           };
         }
