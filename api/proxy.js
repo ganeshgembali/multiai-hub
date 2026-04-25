@@ -11,11 +11,20 @@ export default async function handler(req) {
     const body = await req.json();
     const model = body.model;
     
-    // Read the secret API key from Vercel's Environment Variables
-    const apiKey = process.env.NVIDIA_API_KEY;
+    let apiKey = '';
+    
+    if (model.includes('deepseek')) {
+      apiKey = process.env.NVIDIA_DEEPSEEK_KEY;
+    } else if (model.includes('qwen')) {
+      apiKey = process.env.NVIDIA_QWEN_KEY;
+    } else if (model.includes('minimax')) {
+      apiKey = process.env.NVIDIA_MINIMAX_KEY;
+    } else {
+      apiKey = process.env.NVIDIA_SAFETY_KEY;
+    }
     
     if (!apiKey) {
-      return new Response(JSON.stringify({ error: "Missing NVIDIA_API_KEY environment variable" }), { status: 500 });
+      return new Response(JSON.stringify({ error: `Missing environment variable for model: ${model}` }), { status: 500 });
     }
 
     const response = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
