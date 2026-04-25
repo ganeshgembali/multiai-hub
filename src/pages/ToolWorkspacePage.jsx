@@ -249,7 +249,7 @@ Formatting rules:
             stream: true
           };
         } else if (codingTools.includes(tool.id)) {
-          model = 'minimaxai/minimax-m2.7';
+          model = 'meta/llama-3.1-8b-instruct';
           if (tool.id === 'code-debugger') {
             prompt = `Find bugs in this code.
 
@@ -372,7 +372,7 @@ Formatting rules:
             stream: true
           };
         } else if (studyProdTools.includes(tool.id)) {
-          model = 'minimaxai/minimax-m2.7';
+          model = 'meta/llama-3.1-8b-instruct';
           if (tool.id === 'notes-summarizer') {
             prompt = `Summarize these notes clearly.
 
@@ -527,7 +527,7 @@ Formatting rules:
             stream: true
           };
         } else if (writingTools.includes(tool.id)) {
-          model = 'minimaxai/minimax-m2.7';
+          model = 'meta/llama-3.1-8b-instruct';
           if (tool.id === 'cover-letter') {
             prompt = `Write a professional cover letter based on this job role and profile.
 
@@ -674,7 +674,7 @@ Formatting rules:
             stream: true
           };
         } else if (tool.id === 'todo-generator') {
-          model = 'minimaxai/minimax-m2.7';
+          model = 'meta/llama-3.1-8b-instruct';
           prompt = `Create a productive to-do list based on this goal.
 
 Return checklist format.
@@ -709,7 +709,7 @@ Formatting rules:
             stream: true
           };
         } else if (tool.id === 'idea-generator') {
-          model = 'minimaxai/minimax-m2.7';
+          model = 'meta/llama-3.1-8b-instruct';
           prompt = `Generate 10 creative ideas based on this topic.
 
 Return numbered list with short explanation.

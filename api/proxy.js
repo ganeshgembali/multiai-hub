@@ -22,22 +22,8 @@ export default async function handler(req) {
     const body = await req.json();
     const model = body.model || '';
 
-    let apiKey = '';
-
-    if (model.includes('deepseek')) {
-      apiKey = process.env.NVIDIA_DEEPSEEK_KEY;
-    } else if (model.includes('qwen')) {
-      apiKey = process.env.NVIDIA_QWEN_KEY;
-    } else if (model.includes('minimax')) {
-      apiKey = process.env.NVIDIA_MINIMAX_KEY;
-    } else {
-      apiKey = process.env.NVIDIA_SAFETY_KEY;
-    }
-
-    // Fallback to universal key
-    if (!apiKey) {
-      apiKey = process.env.NVIDIA_API_KEY;
-    }
+    // Force use of the universal key because specific keys are returning 403 or hanging
+    let apiKey = process.env.NVIDIA_API_KEY;
 
     if (!apiKey) {
       return new Response(
