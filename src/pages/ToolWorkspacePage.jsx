@@ -116,8 +116,15 @@ export default function ToolWorkspacePage() {
       }
     }
 
-    // Combine file content + textarea input
-    const combinedInput = [fileContent.trim(), input.trim()].filter(Boolean).join('\n\n');
+    // Combine file content + textarea input and TRUNCATE to avoid 504 TTFT timeout
+    let combinedInput = [fileContent.trim(), input.trim()].filter(Boolean).join('\n\n');
+    
+    // Hard limit at 15,000 chars (~4,000 tokens). 
+    // Massive payloads take >25s to process the prompt (TTFT), causing Vercel 504.
+    if (combinedInput.length > 15000) {
+      combinedInput = combinedInput.substring(0, 15000) + "\n...[Content Truncated to avoid server timeout]...";
+      toast.error("Large file detected. Only the first few pages were analyzed.", { duration: 5000 });
+    }
 
     const targetTools = ['resume-analyzer', 'interview-generator'];
     const codingTools = ['code-debugger', 'code-explainer', 'bug-finder', 'sql-generator'];
@@ -161,7 +168,7 @@ export default function ToolWorkspacePage() {
         let reqBody = {};
 
         if (targetTools.includes(tool.id)) {
-          model = 'minimaxai/minimax-m2.7';
+          model = 'meta/llama-3.1-8b-instruct';
           if (tool.id === 'resume-analyzer') {
             prompt = `Analyze this resume professionally.
 
@@ -734,7 +741,7 @@ Formatting rules:
             stream: true
           };
         } else if (tool.id === 'ats-score') {
-          model = 'minimaxai/minimax-m2.7';
+          model = 'meta/llama-3.1-8b-instruct';
           prompt = `Evaluate this resume for ATS compatibility.
 
 Return:
@@ -774,7 +781,7 @@ Formatting rules:
             stream: true
           };
         } else if (tool.id === 'pdf-qa') {
-          model = 'minimaxai/minimax-m2.7';
+          model = 'meta/llama-3.1-8b-instruct';
           prompt = `Answer the question based only on the provided PDF content.
 
 If not found, say "Not found in document."
